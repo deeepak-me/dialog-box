@@ -1,95 +1,110 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+//
 
-export default function Home() {
+"use client";
+
+import React, { useState, useEffect } from "react";
+import ReportList from "../components/reportlist/reportList";
+import Paginator from "../components/paginator/Paginator";
+import styles from "./page.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
+
+const dummyData = [
+  { name: "Report 1", date: "2024-04-01" },
+  { name: "Report 2", date: "2024-04-05" },
+  { name: "Report 3", date: "2024-04-10" },
+  { name: "Report 4", date: "2024-04-15" },
+  { name: "Report 5", date: "2024-04-20" },
+  { name: "Report 6", date: "2024-04-25" },
+  { name: "Report 7", date: "2024-04-30" },
+];
+
+const ReportsPage = () => {
+  const [reports, setReports] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
+  const reportsPerPageOptions = [3, 5, 10];
+  const indexOfLastReport = currentPage * rowsPerPage;
+  const indexOfFirstReport = indexOfLastReport - rowsPerPage;
+  const currentReports = reports.slice(indexOfFirstReport, indexOfLastReport);
+  const totalPages = Math.ceil(reports.length / rowsPerPage);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      const filteredReports = dummyData.filter((report) => {
+        const reportDate = new Date(report.date);
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        return reportDate >= thirtyDaysAgo;
+      });
+      setReports(filteredReports);
+    };
+
+    fetchReports();
+  }, []);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleRowsPerPageChange = (e) => {
+    setRowsPerPage(Number(e.target.value));
+    setCurrentPage(1);
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
+    <div className={styles.container}>
+      <div className={styles.title}>
+        <h2>Recently Generated Reports</h2>
+      </div>
+
+      <div className={styles.tableContainer}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Report Name</th>
+              <th className={styles.download}>Download</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentReports.map((report, index) => (
+              <tr key={index}>
+                <td>{report.date}</td>
+                <td>{report.name}</td>
+                <td className={styles.download}>
+                  <button>
+                    <FontAwesomeIcon icon={faDownload} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className={styles.paginatorContainer}>
+        <Paginator
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
         <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          Rows per page:{" "}
+          <select
+            className={styles.paginatorSelect}
+            value={rowsPerPage}
+            onChange={handleRowsPerPageChange}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            {reportsPerPageOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
-}
+};
+
+export default ReportsPage;
