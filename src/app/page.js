@@ -54,33 +54,35 @@ const ReportsPage = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.title}>
-        <h2>Recently Generated Reports</h2>
-      </div>
+      <div>
+        <div className={styles.title}>
+          <h2>Recently Generated Reports</h2>
+        </div>
 
-      <div className={styles.tableContainer}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Report Name</th>
-              <th className={styles.download}>Download</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentReports.map((report, index) => (
-              <tr key={index}>
-                <td>{report.date}</td>
-                <td>{report.name}</td>
-                <td className={styles.download}>
-                  <button>
-                    <FontAwesomeIcon icon={faDownload} />
-                  </button>
-                </td>
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Report Name</th>
+                <th className={styles.download}>Download</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentReports.map((report, index) => (
+                <tr key={index}>
+                  <td>{report.date}</td>
+                  <td>{report.name}</td>
+                  <td className={styles.download}>
+                    <button>
+                      <FontAwesomeIcon icon={faDownload} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       <div className={styles.paginatorContainer}>
         <Paginator
