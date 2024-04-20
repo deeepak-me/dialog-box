@@ -1,0 +1,29 @@
+.paginatorContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .paginatorButton {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: transparent;
+  }
+  
+  .paginatorButton.active {
+    background-color: #f5972c;
+    color: #fff;
+  }
+  
+  .paginatorButton:disabled {
+    background-color: #ccc;
+    cursor: default;
+  }
+  
+  .paginatorButton:not(:last-child) {
+    margin-right: 5px;
+  }
+  
